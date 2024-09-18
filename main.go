@@ -1,9 +1,10 @@
 package main
 
-import 
-(
+import (
+     "redis_clone/server"
     "log"
     "net"
+	
 )
 
 func main() {
@@ -15,16 +16,15 @@ func main() {
     }
 
     log.Println("Redis server is running on :1234")
+	
 
     for {
-
         conn, err := listener.Accept()
-
         if err != nil {
             log.Printf("Failed to accept connection: %v", err)
             continue
         }
-
+		go server.HandleConnection(conn)
     }
 
 }
