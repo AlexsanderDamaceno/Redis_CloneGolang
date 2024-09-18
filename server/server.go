@@ -3,9 +3,14 @@ package server
 import (
     "bufio"
     "log"
+    "fmt"
     "net"
     "strings"
 )
+
+
+
+var db_cache = NewStorageCache()
 
 func ParseRequest(data string) (string, []string) {
 
@@ -55,7 +60,23 @@ func handleCommand(command string, args []string) string {
             return "Wrong number of arguments for set command"
         }
 
-        return "Command successful executed!"
+        db_cache.Set(args[0] , args[1]);
+        return "\nOK\r\n"
+
+    case "GET":
+        
+        if len(args) != 1 {
+            return "Wrong number of arguments for set command"
+        }
+
+        value, found_value := db_cache.Get(args[0])
+
+        if found_value {
+            return fmt.Sprintf("\r\n%s\r\n", value)
+        }
+
+        return fmt.Sprintf("\n-1\r\n")
+
 
     default:
         return "Unknown command"
